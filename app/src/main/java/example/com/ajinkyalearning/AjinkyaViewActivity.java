@@ -78,7 +78,10 @@ class ListenAcceleration implements SensorEventListener{
     public ListenAcceleration(TextView ajinkyaTextView, Activity activity){
         this.ajinkyaTextView = ajinkyaTextView;
         this.mActivity = activity;
+
         handler = new Handler();
+        //start some other service
+        mActivity.getApplicationContext().startService(new Intent(mActivity.getApplicationContext(),MyService.class));
     }
     public static ListenAcceleration getListener(TextView ajinkyaTextView, Activity activity){
         if(listenAcceleration==null) listenAcceleration = new ListenAcceleration(ajinkyaTextView,activity);
@@ -92,17 +95,18 @@ class ListenAcceleration implements SensorEventListener{
     @Override
     public void onSensorChanged(final SensorEvent sensorEvent) {
 
-        mActivity.getApplicationContext().startService(new Intent(mActivity.getApplicationContext(),MyService.class));
 
+        //not the bet method of updating the UI
         mActivity.runOnUiThread(new Runnable() {
             @Override
             public void run() {
-              //  if(ajinkyaTextView!=null)
-              //      ajinkyaTextView.setText(Float.toString(sensorEvent.values[0]));
+                if(ajinkyaTextView!=null)
+                    ajinkyaTextView.setText(Float.toString(sensorEvent.values[0]));
             }
         });
 
 
+        //Good method of updating the UI
         handler.post(new Runnable() {
             @Override
             public void run() {
